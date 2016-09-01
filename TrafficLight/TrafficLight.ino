@@ -2,18 +2,40 @@ int red = 13;
 int yellow = 12;
 int green = 11;
 
+int inPort = 2;
+int turnYellow = 4;
+
+bool trafficLightOff = false;
+
 void setup(){
   pinMode(red,OUTPUT);
   pinMode(yellow,OUTPUT);
   pinMode(green,OUTPUT);
 
+  pinMode(inPort, INPUT);
+  pinMode(turnYellow, INPUT);
+
   digitalWrite(red, LOW);
   digitalWrite(yellow, LOW);
   digitalWrite(green, LOW);
+
+  Serial.begin(9600);
 }
 
 void loop(){
-  changeLights();
+  turnBlinkYellow();
+  Serial.print(trafficLightOff);
+  if(digitalRead(turnYellow) == HIGH){
+    trafficLightOff = !trafficLightOff;
+  }else{
+  digitalWrite(red, HIGH);
+  int val = digitalRead(inPort);
+  if(val==HIGH){
+    delay(2000);
+    changeLights();
+  }
+  }
+  //changeLights();
 }
 
 void changeLights(){
@@ -39,11 +61,12 @@ void changeLights(){
   digitalWrite(green, LOW);
 }
 
-void turnBlinkYellow(bool trafficLightOff = false){
-  if(!trafficLightOff){
+void turnBlinkYellow(){
+  if(trafficLightOff){
     digitalWrite(yellow, HIGH);
-    delay(3000);
+    delay(250);
     digitalWrite(yellow, LOW);
+    delay(250);
   }
 }
 
